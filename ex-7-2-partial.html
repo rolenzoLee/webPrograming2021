@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Local Storage</title>
+    <style type="text/CSS">
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            background-color: lightblue;
+            font-family: Perpetua;
+        }
+
+        table, td, th {
+            border: 1px solid black;
+            padding: 4px;
+        }
+
+        th {
+            text-align: center;
+            color: white;
+            background-color: darkblue;
+        }
+
+        tr.oddrow {
+            background-color: white;
+        }
+
+        td {
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        function addItem() {
+            let title = document.getElementById("title");
+            let author = document.getElementById("author");
+            let year = document.getElementById("year");
+            let url = document.getElementById("url");
+
+            let inf = new Object();
+            inf.title = title.value;
+            inf.author = author.value;
+            inf.year = year.value;
+            inf.url = url.value;
+            
+            let currentTime = new Date();
+            currentTime = currentTime.getTime();
+            currentTime = "ntou-" + currentTime;
+            
+            
+            localStorage.setItem(currentTime, JSON.stringify(inf));
+            loadSearches();
+            
+        }
+        function removeAll(){
+            localStorage.clear();
+            loadSearches();
+        }
+        function loadSearches() {
+            let length = localStorage.length;
+            tags = new Array();
+            for (let i = 0; i < length; ++i){
+                tags[i] = localStorage.key(i);
+            }
+            tags.sort();
+            console.log(tags);
+            let makeup="";
+            for (let tag in tags){
+                makeup+="<tr>"
+                let tmp = "";
+                tmp = "<td>" +JSON.parse(localStorage.getItem(tags[tag])).title +"</td>"+"<td>" +JSON.parse(localStorage.getItem(tags[tag])).author +"</td>" + "<td>" +JSON.parse(localStorage.getItem(tags[tag])).year +"</td>" + "<td><a href='" +JSON.parse(localStorage.getItem(tags[tag])).url+"'>"+ JSON.parse(localStorage.getItem(tags[tag])).url +"</td>";
+                console.log(tmp);
+                makeup += tmp;
+                // console.log(JSON.parse(localStorage.getItem(tags[tag])).title);
+            }
+            makeup+="</tr>";
+            let tbodyElement = document.getElementById("tbody");
+            tbodyElement.innerHTML = makeup;
+
+        }
+        function start(){
+            let addButton = document.getElementById("addButton");
+            addButton.addEventListener("click",addItem,false);
+            let removeAllButton = document.getElementById("removeAllButton");
+            removeAllButton.addEventListener("click", removeAll, false);
+            loadSearches();
+        }
+        window.addEventListener("load", start, false);
+        // TODO
+    </script>
+</head>
+
+<body>
+    <form action="#">
+        <p>
+            <label>Book Title:<input id = "title" type = "text"></label>
+            <label>Author(s):<input id = "author" type = "text"></label>
+            <label>Year:<input id = "year" type = "number"></label>
+            <label>Book URL:<input id = "url" type = "text"></label>
+        </p>
+        <p>
+            <input type="button" value="Add New Item" id="addButton">
+            <input type="button" value="Remove All Items" id="removeAllButton">
+        </p>
+    </form>
+    <hr>
+    <div id="display">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody id = "tbody">
+                
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
